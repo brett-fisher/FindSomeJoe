@@ -16,6 +16,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
   
   let manager = CLLocationManager()
   
+  @IBAction func findMeCoffeeButton(_ sender: Any) {
+    manager.startUpdatingLocation()
+    manager.stopUpdatingLocation()
+  }
+  
+  
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     
     let location = locations[0]
@@ -33,7 +39,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
     manager.delegate = self
     manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
     manager.requestWhenInUseAuthorization()
-    manager.startUpdatingLocation()
     
   }
 
