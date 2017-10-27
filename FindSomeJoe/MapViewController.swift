@@ -10,17 +10,24 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class MapViewController: UIViewController, CLLocationManagerDelegate {
+class MapViewController: UIViewController {
 
+  var manager: CLLocationManager?
+  
   @IBOutlet weak var mapView: MKMapView!
   
-  let manager = CLLocationManager()
-  
-  @IBAction func findMeCoffeeButton(_ sender: Any) {
-    manager.startUpdatingLocation()
-    manager.stopUpdatingLocation()
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    manager = CLLocationManager()
+    manager?.delegate = self
+    manager?.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+    manager?.requestWhenInUseAuthorization()
+    
   }
-  
+}
+
+extension MapViewController: CLLocationManagerDelegate {
   
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     
@@ -33,19 +40,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
     mapView.setRegion(region, animated: true)
   }
   
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    
-    manager.delegate = self
-    manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-    manager.requestWhenInUseAuthorization()
-    
+  // Only start updating the location after the user has authorized
+  func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+    if status == .authorizedWhenInUse || status == .authorizedAlways {
+      manager.startUpdatingLocation()
+    }
   }
-
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-  }
-
-
+  
 }
 
