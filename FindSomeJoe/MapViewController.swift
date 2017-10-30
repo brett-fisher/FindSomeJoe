@@ -13,6 +13,7 @@ import CoreLocation
 class MapViewController: UIViewController {
 
   var manager: CLLocationManager?
+  var startLocation: CLLocation?
   
   @IBOutlet weak var mapView: MKMapView!
   
@@ -29,9 +30,18 @@ class MapViewController: UIViewController {
 
 extension MapViewController: CLLocationManagerDelegate {
   
-  // Only start updating the location after the user has authorized
+  func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {}
+  
+  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    if startLocation == nil {
+      startLocation = locations.first
+      print(startLocation!)
+      // Still need to update the map with location coordinates
+    }
+  }
+  
   func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-    if status == .authorizedWhenInUse || status == .authorizedAlways {
+    if status == .authorizedAlways || status == .authorizedWhenInUse {
       manager.requestLocation()
     }
   }
